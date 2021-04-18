@@ -39,7 +39,7 @@ fi
 # essentials
 export EDITOR=vim
 command -v nvim >/dev/null 2>&1 \
-&& export EDITOR=nvim
+  && export EDITOR=nvim
 
 export LS_COLORS='ex=00:su=00:sg=00:ca=00:'
 if [[ -f ~/bin/gruvbox.dircolors ]] && command -v dircolors >/dev/null 2>&1; then
