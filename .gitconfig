@@ -1,0 +1,94 @@
+[user]
+  name = Tyler Heucke
+  email = tyler@heuc.net
+  signingkey = 36D9A232C37820BF
+
+[core]
+  pager = less -+$LESS -FRX
+
+[alias]
+  # short aliases
+  br = branch
+  co = checkout
+  d = diff
+  p = diff --cached --diff-algorithm=minimal -w
+  s = status
+  # regular aliases
+  amend = commit --amend --date=now
+  unstage = reset -q HEAD --
+  # pluralized commands
+  branches = branch -a
+  remotes = remote -v
+  stashes = stash list
+  tags = tag
+  # rebase
+  rewrite = "!f() { git rebase -i HEAD~$1; }; f"
+  update = "!f() { git checkout - && git pull && git checkout - && git rebase master; }; f"
+  # repository browsing
+  # o:  only show branch tips
+  # l:  show last n (default 15) commits on my branch
+  # la: show last n (default 15) commits across all branches
+  o = log --all --graph --oneline --decorate --topo-order --simplify-by-decoration
+  l = "!f() { git log --graph --oneline --decorate --topo-order -n ${1:-15}; }; f"
+  la = "!f() { git log --graph --oneline --decorate --topo-order --all -n ${1:-15}; }; f"
+
+[color]
+  branch = auto
+  diff = auto
+  status = auto
+  showbranch = auto
+  ui = auto
+
+[push]
+  default = simple
+
+[pull]
+  rebase = true
+  ff = only
+
+[merge]
+  tool = vimdiff
+
+[mergetool]
+  prompt = true
+
+[mergetool "vimdiff"]
+  cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+
+[difftool]
+  prompt = true
+
+[diff]
+  algorithm = patience
+  tool = vimdiff
+
+[credential]
+  helper = cache
+
+[filter "lfs"]
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+  clean = git-lfs clean -- %f
+
+[fetch]
+  prune = true
+
+[stash]
+  showPatch = true
+
+[rebase]
+  autostash = true
+
+[rerere]
+  enabled = true
+
+[color "diff"]
+  meta = yellow bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+  whitespace = red reverse
+
+[commit]
+  gpgSign = true

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+args=("-2" "new-session" "-A" "-D" "-s")
+if [[ "$1" == "CC" ]]; then
+  args=("-CC" "${args[@]}")
+  shift 1
+fi
+
+session="main"
+if [[ -n "$1" ]]; then
+  session="$1"
+fi
+
+exec tmux "${args[@]}" "$session"

@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -euo pipefail
+#set -x
+
+# Thanks to https://css-tricks.com/html-email-accessibility/
+
+input=$(</dev/stdin)
+
+job_name="$(jq -r '.job.name' <<<"$input")"
+job_cmd="$(jq -r '.job.command' <<<"$input")"
+job_status="$(jq -r '.job.status' <<<"$input")"
+output_err="$(jq -r '.stderr' <<<"$input")"
+output_out="$(jq -r '.stdout' <<<"$input")"
+
+/usr/sbin/ssmtp notifications@tyler.heucke.io <<EOF
+To: Notifications<notifications@tyler.heucke.io>
+From: Homelab<home@tyler.heucke.io>
+Subject: $job_name Finished ($job_status)
+Content-Type: text/html
+MIME-Version: 1.0
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>$job_name Run Report</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <style type="text/css">
+      body {
+        margin: 0 auto;
+        font-size: 14px;
+        line-height: 1.2;
+        padding: 0em 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>$job_name finished</h1>
+    <h3>Status: $job_status</h3>
+    <p>Command: <pre style="overflow: auto;"><code><em>$job_cmd</em></code></pre></p>
+    <p>Stdout: <pre style="overflow: auto;"><code>$output_out</code></pre></p>
+    <p>Stderr: <pre style="overflow: auto; color: red;"><code>$output_err</code></pre></p>
+  </body>
+</html>
+EOF
