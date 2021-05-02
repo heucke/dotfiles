@@ -4,7 +4,14 @@
   signingkey = 36D9A232C37820BF
 
 [core]
-  pager = less -+$LESS -FRX
+  # pager = less -+$LESS -FRX
+  pager = delta -w ${FZF_PREVIEW_COLUMNS:-$COLUMNS}
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  line-numbers = true
 
 [alias]
   # short aliases
