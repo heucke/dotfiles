@@ -224,6 +224,7 @@ augroup Languages
   au FileType gohtmltmpl setl expandtab shiftwidth=2 softtabstop=2 tabstop=4
   au FileType python setl colorcolumn=88 shiftwidth=4 softtabstop=4
   au FileType rust setl colorcolumn=100
+  autocmd BufNewFile,BufRead *.fish set syntax=fish filetype=fish
 augroup END
 
 " tsv

@@ -1,8 +1,10 @@
 {
   "diagnostic-languageserver.filetypes": {
+    "fish": "fish",
     "sh": "shellcheck"
   },
   "diagnostic-languageserver.formatFiletypes": {
+    "fish": "fish_indent",
     "sh": "shfmt"
   },
   "diagnostic-languageserver.linters": {
