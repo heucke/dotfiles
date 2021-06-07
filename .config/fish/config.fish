@@ -121,7 +121,7 @@ alias la "ls --group-directories-first -AFhl --color=auto"
 alias l "ls --group-directories-first -Fh1 --color=auto"
 alias less "less -FSRXc"
 alias rsync "rsync -ahSH --progress"
-alias tree "tree -F -C --dirsfirst"
+alias tree "tree -I 'target|node_modules|.git' -ash -F -C --dirsfirst"
 
 # programs
 alias dk docker
