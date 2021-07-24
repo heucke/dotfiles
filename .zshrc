@@ -104,5 +104,17 @@ FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}here-string-var]="fg=cyan,bg=$currentbg"
 FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}subtle-bg]="bg=$currentbg"
 ### End of Zinit's installer chunk }}}
 
-# load fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# programs {{{
+if command -v mcfly &>/dev/null; then
+  export MCFLY_FUZZY=true
+  export MCFLY_HISTORY_LIMIT=10000
+  if [[ "$LIGHTS" = on ]]; then
+    export MCFLY_LIGHT=TRUE
+  else
+    unset MCFLY_LIGHT
+  fi
+  eval "$(mcfly init zsh)"
+elif command -v fzf &>/dev/null; then
+  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+fi
+# }}}

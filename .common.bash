@@ -137,7 +137,6 @@ alias la="ls --group-directories-first -AFhl --color=auto"
 alias l="ls --group-directories-first -Fh1 --color=auto"
 alias less="less -FSRXc"
 alias rsync="rsync -ahSH --progress"
-alias tree="tree -F -C --dirsfirst"
 
 # programs
 alias dk="docker"
@@ -168,6 +167,14 @@ ssh() {
     env TERM=screen-256color ssh "$@"
   else
     command ssh "$@"
+  fi
+}
+
+tree() {
+  if command -v exa &>/dev/null; then
+    exa --long --tree --level=3 --group-directories-first --git --git-ignore --ignore-glob 'target|node_modules|.git' --color=always $@ | bat --color
+  else
+    command tree -I 'target|node_modules|.git' -ash -F -C --dirsfirst
   fi
 }
 # }}}
