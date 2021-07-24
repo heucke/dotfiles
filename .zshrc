@@ -2,7 +2,7 @@
 
 source ~/.common.bash
 
-# General Configuration {{{
+# zsh configuration {{{
 bindkey -e
 
 export HISTFILE=~/.zsh_history
@@ -26,7 +26,7 @@ setopt SHARE_HISTORY # replaces EXTENDED_HISTORY and INC_APPEND_HISTORY
 setopt pipefail
 # }}}
 
-# Prompt {{{
+# prompt {{{
 function pipe_status() {
   local stats=( $pipestatus )
   p=false
@@ -60,6 +60,22 @@ precmd () { __git_ps1 "
 %{%F{246}%}%T%{%f%} $(ps_host)%{%F{4}%}%~%{%f%}" "
 %{%F{246}%}%1(j.z%j.)%{%f%}$(py_ve)%{%F{5}%}λ%{%f%} " }
 precmd_functions+=(pipe_status)
+# }}}
+
+# programs {{{
+if command -v mcfly &>/dev/null; then
+  export MCFLY_FUZZY=true
+  export MCFLY_RESULTS=50
+  export MCFLY_HISTORY_LIMIT=10000
+  if [[ "$LIGHTS" = on ]]; then
+    export MCFLY_LIGHT=TRUE
+  else
+    unset MCFLY_LIGHT
+  fi
+  eval "$(mcfly init zsh)"
+elif command -v fzf &>/dev/null; then
+  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+fi
 # }}}
 
 # load local configurations
@@ -103,18 +119,3 @@ FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}here-string-text]="fg=blue,bg=$currentbg
 FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}here-string-var]="fg=cyan,bg=$currentbg"
 FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}subtle-bg]="bg=$currentbg"
 ### End of Zinit's installer chunk }}}
-
-# programs {{{
-if command -v mcfly &>/dev/null; then
-  export MCFLY_FUZZY=true
-  export MCFLY_HISTORY_LIMIT=10000
-  if [[ "$LIGHTS" = on ]]; then
-    export MCFLY_LIGHT=TRUE
-  else
-    unset MCFLY_LIGHT
-  fi
-  eval "$(mcfly init zsh)"
-elif command -v fzf &>/dev/null; then
-  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-fi
-# }}}

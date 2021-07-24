@@ -103,6 +103,13 @@ export FZF_DEFAULT_OPTS="
 --bind '?:toggle-preview'
 "
 
+# git-prompt
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+export GIT_PS1_SHOWDIRTYSTATE=true
+export GIT_PS1_SHOWSTASHSTATE=true
+export GIT_PS1_SHOWUNTRACKEDFILES=true
+export GIT_PS1_SHOWUPSTREAM="auto"
+export GIT_PS1_SHOWCOLORHINTS=true
 # }}}
 
 # gpg {{{
@@ -185,15 +192,6 @@ tree() {
     command tree -I 'target|node_modules|.git' -ash -F -C --dirsfirst
   fi
 }
-# }}}
-
-# prompt {{{
-export VIRTUAL_ENV_DISABLE_PROMPT=1
-export GIT_PS1_SHOWDIRTYSTATE=true
-export GIT_PS1_SHOWSTASHSTATE=true
-export GIT_PS1_SHOWUNTRACKEDFILES=true
-export GIT_PS1_SHOWUPSTREAM="auto"
-export GIT_PS1_SHOWCOLORHINTS=true
 # }}}
 
 export PATH=$PATH:$HOME/bin_last

@@ -170,6 +170,7 @@ end
 # programs {{{
 if command -sq mcfly
     set -x MCFLY_FUZZY true
+    set -x MCFLY_RESULTS 50
     set -x MCFLY_HISTORY_LIMIT 10000
     if test "$LIGHTS" = on
         set -x MCFLY_LIGHT TRUE
