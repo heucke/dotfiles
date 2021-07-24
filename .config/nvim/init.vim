@@ -26,8 +26,10 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } "installs fzf
 Plug 'junegunn/fzf.vim'                "provides helpful commands like :Rg
 " looks
 Plug 'morhetz/gruvbox'                 "color scheme
-Plug 'sheerun/vim-polyglot'            "syntax support
 Plug 'vim-airline/vim-airline'         "status bar
+"syntax
+Plug 'sheerun/vim-polyglot'            "syntax support
+Plug 'earthly/earthly.vim', { 'branch': 'main' }
 " basic plugins }}}
 " advanced plugins {{{
 Plug 'kyazdani42/nvim-tree.lua'        "file tree
