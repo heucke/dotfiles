@@ -132,9 +132,17 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   alias ls=gls
   alias readlink=greadlink
 fi
-alias ll="ls --group-directories-first -Fhl --color=auto"
-alias la="ls --group-directories-first -AFhl --color=auto"
-alias l="ls --group-directories-first -Fh1 --color=auto"
+if command -v exa &>/dev/null; then
+    EXA_IGNORE_GLOB='target|node_modules|.git'
+    alias ll="exa --long --group-directories-first --ignore-glob '$EXA_IGNORE_GLOB' --color=auto"
+    alias la="exa -a --long --group-directories-first --ignore-glob '$EXA_IGNORE_GLOB' --color=auto"
+    alias lg="exa --long --git --group-directories-first --ignore-glob '$EXA_IGNORE_GLOB' --color=auto"
+    alias l="exa --oneline --group-directories-first --ignore-glob '$EXA_IGNORE_GLOB' --color=auto"
+else
+    alias ll="ls --group-directories-first -Fhl --color=auto"
+    alias la="ls --group-directories-first -AFhl --color=auto"
+    alias l="ls --group-directories-first -Fh1 --color=auto"
+fi
 alias less="less -FSRXc"
 alias rsync="rsync -ahSH --progress"
 
