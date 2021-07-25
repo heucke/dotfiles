@@ -142,6 +142,14 @@ alias tbeet "command beet --config=/flash/drive/tyler/Music/tyler-beets-config.y
 # aliases }}}
 
 # functions {{{
+function merge_history --on-event fish_prompt
+    # read shell commands from other active shell sessions after pressing enter
+    # this lets you press up to get the last command from the current session,
+    # or up + enter to get the last command from any session, just like how zsh
+    # operates (the way I have it configured)
+    history merge
+end
+
 function cm
     mkdir -p $argv[1] && builtin cd $argv[1] || return
 end
