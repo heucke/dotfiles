@@ -81,6 +81,10 @@ set -x FZF_DEFAULT_OPTS "
 --bind '?:toggle-preview'
 "
 
+if command -sq zoxide
+    zoxide init fish | source
+end
+
 # personal stuff
 set -x BOOKEND_SERVER hety.io
 set -x BOOKEND_CA_CERT /home/$USER/certs/prod/myCA.pem
