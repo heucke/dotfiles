@@ -110,6 +110,12 @@ export GIT_PS1_SHOWSTASHSTATE=true
 export GIT_PS1_SHOWUNTRACKEDFILES=true
 export GIT_PS1_SHOWUPSTREAM="auto"
 export GIT_PS1_SHOWCOLORHINTS=true
+
+# personal stuff
+export BOOKEND_SERVER=hety.io
+export SRC_CA_CERT=/home/$USER/certs/prod/myCA.pem
+export SRC_TLS_CERT=/home/$USER/certs/prod/duma.in.heucke.io.crt
+export SRC_TLS_KEY=/home/$USER/certs/prod/duma.in.heucke.io.key
 # }}}
 
 # gpg {{{

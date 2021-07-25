@@ -87,9 +87,9 @@ end
 
 # personal stuff
 set -x BOOKEND_SERVER hety.io
-set -x BOOKEND_CA_CERT /home/$USER/certs/prod/myCA.pem
-set -x BOOKEND_TLS_CERT /home/$USER/certs/prod/duma.in.heucke.io.crt
-set -x BOOKEND_TLS_KEY /home/$USER/certs/prod/duma.in.heucke.io.key
+set -x SRC_CA_CERT /home/$USER/certs/prod/myCA.pem
+set -x SRC_TLS_CERT /home/$USER/certs/prod/duma.in.heucke.io.crt
+set -x SRC_TLS_KEY /home/$USER/certs/prod/duma.in.heucke.io.key
 # environment }}}
 
 # gpg {{{
