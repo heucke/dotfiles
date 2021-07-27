@@ -74,12 +74,22 @@ else if type rg >/dev/null 2>&1
     set -x FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
 end
 set -x FZF_DEFAULT_OPTS "
+--ansi
 --layout=reverse
+--no-height
 --preview-window=hidden
 --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200'
 --color='hl:148,hl+:154,pointer:032,marker:010,bg+:237,gutter:008'
 --bind '?:toggle-preview'
+--bind 'ctrl-b:preview-up,ctrl-f:preview-down'
 "
+function fzf
+    if test (tput cols) -lt 120
+        command fzf --preview-window 'down:60%' $argv
+    else
+        command fzf --preview-window 'right:50%' $argv
+    end
+end
 
 if command -sq zoxide
     zoxide init fish | source
