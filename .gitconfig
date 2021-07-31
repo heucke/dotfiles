@@ -35,9 +35,14 @@
   # o:  only show branch tips
   # l:  show last n (default 15) commits on my branch
   # la: show last n (default 15) commits across all branches
-  o = log --all --graph --oneline --decorate --topo-order --simplify-by-decoration
-  l = "!f() { git log --graph --oneline --decorate --topo-order -n ${1:-15}; }; f"
-  la = "!f() { git log --graph --oneline --decorate --topo-order --all -n ${1:-15}; }; f"
+  o = log --all --graph --decorate --topo-order --simplify-by-decoration
+  l = "!f() { git log --graph --decorate --topo-order -n ${1:-15}; }; f"
+  la = "!f() { git log --graph --decorate --topo-order --all -n ${1:-15}; }; f"
+
+[log]
+  date = relative
+[format]
+  pretty = format:%C(auto,yellow)%h%C(auto,magenta)% G? %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(7,trunc)%aN %C(auto,reset)%s%C(auto,red)% gD% D
 
 [color]
   branch = auto
