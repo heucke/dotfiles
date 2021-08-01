@@ -91,10 +91,6 @@ function fzf
     end
 end
 
-if command -sq zoxide
-    zoxide init fish | source
-end
-
 # personal stuff
 set -x BOOKEND_SERVER hety.io
 set -x SRC_CA_CERT /home/$USER/certs/prod/myCA.pem

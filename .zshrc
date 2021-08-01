@@ -106,8 +106,3 @@ FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}subtle-bg]="bg=$currentbg"
 
 # load fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# load zoxide
-if command -v zoxide &>/dev/null; then
-  eval "$(zoxide init zsh)"
-fi
