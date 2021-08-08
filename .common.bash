@@ -57,7 +57,7 @@ if command -v bat >/dev/null 2>&1; then
   if [[ "$LIGHTS" == "on" ]]; then
     export BAT_THEME="gruvbox-light"
   else
-    export BAT_THEME="gruvbox"
+    export BAT_THEME="gruvbox-dark"
   fi
   alias cat=bat
 fi

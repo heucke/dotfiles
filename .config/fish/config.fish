@@ -51,7 +51,7 @@ if type bat >/dev/null 2>&1
     if test "$LIGHTS" = on
         set -x BAT_THEME gruvbox-light
     else
-        set -x BAT_THEME gruvbox
+        set -x BAT_THEME gruvbox-dark
     end
     alias cat bat
 end
