@@ -1,5 +1,6 @@
 # environment {{{
 set fish_greeting
+set fish_prompt_pwd_dir_length 4
 
 set -x PATH $HOME/bin $HOME/.local/bin /usr/local/bin /usr/bin /bin /usr/sbin /sbin $HOME/.fzf/bin
 set -x PATH $PATH $HOME/bin_last
