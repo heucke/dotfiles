@@ -180,8 +180,8 @@ alias hstat="curl -o /dev/null --silent --head --write-out '%{http_code}\n'" $1
 
 # music
 alias beet="echo 'Use tbeet for Tyler or mbeet for Mark.'"
-alias mbeet="\beet --config=/data/music/mark.config.yaml"
-alias tbeet="\beet --config=/data/music/tyler.config.yaml"
+alias mbeet="command beet --config=/flash/drive/tyler/Music/mark-beets-config.yml"
+alias tbeet="command beet --config=/flash/drive/tyler/Music/tyler-beets-config.yml"
 # }}}
 
 # functions {{{
