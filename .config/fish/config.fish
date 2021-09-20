@@ -94,6 +94,8 @@ end
 
 # personal stuff
 set -x BOOKEND_SERVER hety.io
+set -x PASTEBIN_SERVER pb.hety.io
+set -x PASTEBIN_DISPLAY_SERVER pb.rip.ac
 set -x SRC_CA_CERT /home/$USER/certs/prod/myCA.pem
 set -x SRC_TLS_CERT /home/$USER/certs/prod/duma.in.heucke.io.crt
 set -x SRC_TLS_KEY /home/$USER/certs/prod/duma.in.heucke.io.key
