@@ -146,6 +146,8 @@ if ! type -f ffmpeg >/dev/null 2>&1
 end
 alias pb "xsel --clipboard"
 alias kc "kubectl config current-context"
+# https://github.com/DanielFGray/fzf-scripts
+alias jqfzf="fzrepl -c 'jq -r {q}' -q ."
 
 # music
 alias beet "echo 'Use tbeet for Tyler or mbeet for Mark.'"

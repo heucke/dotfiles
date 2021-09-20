@@ -179,6 +179,8 @@ fi
 alias pb="xsel --clipboard"
 alias kc="kubectl config current-context"
 alias hstat="curl -o /dev/null --silent --head --write-out '%{http_code}\n'" $1
+# https://github.com/DanielFGray/fzf-scripts
+alias jqfzf="fzrepl -c 'jq -r {q}' -q ."
 
 # music
 alias beet="echo 'Use tbeet for Tyler or mbeet for Mark.'"
