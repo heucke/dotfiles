@@ -1,9 +1,5 @@
 " init {{{
-if has('nvim')
-  let s:editor_root=expand('~/.config/nvim')
-else
-  let s:editor_root=expand('~/.vim')
-endif
+let s:editor_root=expand('~/.config/nvim')
 let &runtimepath.=','.s:editor_root
 " automatically installs vim-plug in s:editor_root for us
 if empty(glob(s:editor_root . '/autoload/plug.vim'))
@@ -37,62 +33,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
 " settings {{{
-" sensible (neovim) defaults {{{
-" https://github.com/neovim/neovim/blob/master/runtime/doc/vim_diff.txt
-if !has('nvim')
-  syntax on
-  filetype plugin indent on
-  set autoindent
-  set autoread
-  set background=dark
-  set backspace=indent,eol,start
-  silent call system('mkdir -p '.s:editor_root.'/backup')
-  let &backupdir=s:editor_root.'/backup'
-  set belloff=all
-  set complete-=i
-  set cscopeverbose
-  silent call system('mkdir -p '.s:editor_root.'/swap')
-  let &directory=s:editor_root.'/swap'
-  "set display=lastline,msgsep
-  " msgsep arg doesn't exist
-  set display=lastline
-  set encoding=UTF-8
-  "set fillchars=vert:│,fold:·,sep:│
-  " invalid argument
-  set fillchars+=vert:│
-  set formatoptions=tcqj
-  set nofsync
-  set history=1000
-  set hlsearch
-  set incsearch
-  set langnoremap
-  set nolangremap
-  set laststatus=2
-  "set listchars=tab:> ,trail:-,nbsp:+
-  " invalid argument
-  set listchars=tab:>-,trail:-,nbsp:+
-  set nrformats=bin,hex
-  set ruler
-  set sessionoptions-=options
-  set shortmess+=F
-  set shortmess-=S
-  set showcmd
-  set sidescroll=1
-  set smarttab
-  set nostartofline
-  set tabpagemax=50
-  set tags=./tags;,tags
-  set ttimeoutlen=50
-  set ttyfast
-  silent call system('mkdir -p '.s:editor_root.'/undo')
-  let &undodir=s:editor_root.'/undo/'
-  set viminfo-=!
-  set wildmenu
-  "set wildoptions=pum,tagfile
-  " pum not a valid option
-  set wildoptions=tagfile
-endif
-" }}}
 " behavior {{{
 " Don't autoselect any completion options, always show menu with 1+ matches
 set completeopt=noinsert,menuone,noselect
@@ -112,9 +52,6 @@ set foldmethod=marker
 if executable('rg')
   set grepprg=rg\ --no-heading\ --vimgrep
   set grepformat=%f:%l:%c:%m
-elseif executable('ag')
-  set grepprg=ag\ --vimgrep
-  set grepformat=%f:%l:%c:%m,%f:%l:%m
 endif
 " Switch between buffers without needing to save
 set hidden
@@ -176,15 +113,13 @@ augroup vimrc_term
   " automatically enter insert mode when switching to a :term window
   autocmd WinEnter term://* startinsert
 
-  if has('nvim')
-    " allow <C-hjkl> to navigate windows even in insert mode in a :term window
-    autocmd TermOpen * tnoremap <buffer> <C-h> <C-\><C-n><C-w>h
-    autocmd TermOpen * tnoremap <buffer> <C-j> <C-\><C-n><C-w>j
-    autocmd TermOpen * tnoremap <buffer> <C-k> <C-\><C-n><C-w>k
-    autocmd TermOpen * tnoremap <buffer> <C-l> <C-\><C-n><C-w>l
-    autocmd TermOpen * tnoremap <buffer> <Esc> <C-\><C-n>
-    autocmd TermOpen * tnoremap <buffer> jk    <C-\><C-n>
-  endif
+  " allow <C-hjkl> to navigate windows even in insert mode in a :term window
+  autocmd TermOpen * tnoremap <buffer> <C-h> <C-\><C-n><C-w>h
+  autocmd TermOpen * tnoremap <buffer> <C-j> <C-\><C-n><C-w>j
+  autocmd TermOpen * tnoremap <buffer> <C-k> <C-\><C-n><C-w>k
+  autocmd TermOpen * tnoremap <buffer> <C-l> <C-\><C-n><C-w>l
+  autocmd TermOpen * tnoremap <buffer> <Esc> <C-\><C-n>
+  autocmd TermOpen * tnoremap <buffer> jk    <C-\><C-n>
 
   " fzf launches in it's own filetype :term window
   autocmd FileType fzf tunmap <buffer> <Esc>
@@ -280,26 +215,14 @@ nnoremap < :lcd ..<CR>
 " mappings }}}
 
 " theme and colors {{{
-if has('nvim')
-  if filereadable($HOME.'/.termguicolors')
-    " manually enable termguicolors by touching ~/.termguicolors
-    set termguicolors
-  elseif filereadable($HOME.'/.gruvbox_256palette.sh')
-    " if term doesn't support true color, touch this file if :term looks bad
-    let g:gruvbox_termcolors=16
-  else
-    set notermguicolors
-  endif
+if filereadable($HOME.'/.termguicolors')
+  " manually enable termguicolors by touching ~/.termguicolors
+  set termguicolors
+elseif filereadable($HOME.'/.gruvbox_256palette.sh')
+  " if term doesn't support true color, touch this file if :term looks bad
+  let g:gruvbox_termcolors=16
 else
-  " termguicolors doesn't seem to work in tmux/vim combo
   set notermguicolors
-  if !filereadable($HOME.'/setup/gruvbox_256palette.sh')
-    set t_Co=16
-    highlight ColorColumn ctermbg=16
-  endif
-  " italics support in vim
-  let &t_8f='\<Esc>[38;2;%lu;%lu;%lum'
-  let &t_8b='\<Esc>[48;2;%lu;%lu;%lum'
 endif
 let g:gruvbox_number_column='bg1'
 let g:gruvbox_italic=1
@@ -329,6 +252,7 @@ set cmdheight=2
 if has("patch-8.1.1564")
   " Recently vim can merge signcolumn and number column into one
   set signcolumn=number
+  set number
 else
   set signcolumn=yes
 endif
@@ -355,7 +279,7 @@ autocmd  FileType fzf set noshowmode noruler nonu
 let $FZF_DEFAULT_OPTS='--layout=reverse'
 
 " Floating window
-if has('nvim') && &termguicolors
+if &termguicolors
   if exists('&winblend')
     set winblend=15
   endif
@@ -447,12 +371,10 @@ if has('nvim-0.4.0') || has('patch-8.2.0750')
   vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 endif
 
-" NeoVim-only mapping for visual mode scroll
+" Mapping for visual mode scroll
 " Useful on signatureHelp after jump placeholder of snippet expansion
-if has('nvim')
-  vnoremap <nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#nvim_scroll(1, 1) : "\<C-f>"
-  vnoremap <nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#nvim_scroll(0, 1) : "\<C-b>"
-endif
+vnoremap <nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#nvim_scroll(1, 1) : "\<C-f>"
+vnoremap <nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#nvim_scroll(0, 1) : "\<C-b>"
 
 " Add `:Format` command to format current buffer.
 command! -nargs=0 Format :call CocAction('format')
