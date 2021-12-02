@@ -19,7 +19,7 @@ d push
 
 Replicate:
 ```
-git clone --separate-git-dir ~/.dotfiles https://gitlab.com/tyhe/dotfiles.git ~/dotfiles-tmp
+git clone --separate-git-dir ~/.dotfiles https://heuc.net/t/dotfiles ~/dotfiles-tmp
 rm -rf ~/dotfiles-tmp
 alias d='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 d config status.showUntrackedFiles no
