@@ -28,7 +28,6 @@ Plug 'sheerun/vim-polyglot'            "syntax support
 Plug 'earthly/earthly.vim', { 'branch': 'main' }
 " basic plugins }}}
 " advanced plugins {{{
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " advanced plugins }}}
 call plug#end()
 
@@ -327,58 +326,4 @@ let g:airline_section_z='%l/%L : %c'
 " }}}
 " basic plugin settings }}}
 " advanced plugin settings {{{
-"neoclide/coc.nvim
-let g:coc_global_extensions = [
-  \ 'coc-diagnostic',
-  \ 'coc-go',
-  \ 'coc-json',
-  \ 'coc-pyright',
-  \ 'coc-rust-analyzer',
-  \ ]
-
-nmap <silent> <Leader>le <Plug>(coc-diagnostic-next)
-nmap <silent> <Leader>ld <Plug>(coc-definition)
-nmap <silent> <Leader>ly <Plug>(coc-type-definition)
-nmap <silent> <Leader>li <Plug>(coc-implementation)
-nmap <silent> <Leader>lr <Plug>(coc-references)
-
-nmap <leader>ln <Plug>(coc-rename)
-xmap <leader>lf <Plug>(coc-format-selected)
-nmap <leader>lf <Plug>(coc-format)
-
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
-
-" Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Remap <C-f> and <C-b> for scroll float windows/popups.
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
-
-" Mapping for visual mode scroll
-" Useful on signatureHelp after jump placeholder of snippet expansion
-vnoremap <nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#nvim_scroll(1, 1) : "\<C-f>"
-vnoremap <nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#nvim_scroll(0, 1) : "\<C-b>"
-
-" Add `:Format` command to format current buffer.
-command! -nargs=0 Format :call CocAction('format')
-
-" Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport')
 " advanced plugin settings }}}
