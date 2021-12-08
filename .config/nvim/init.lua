@@ -320,6 +320,35 @@ require'nvim-treesitter.configs'.setup {
 }
 -- treesitter }}}
 
+-- completion {{{
+local cmp = require 'cmp'
+cmp.setup {
+  mapping = {
+    ['<C-p>'] = cmp.mapping.select_prev_item(),
+    ['<C-n>'] = cmp.mapping.select_next_item(),
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    -- ['<C-Space>'] = cmp.mapping.complete(),
+    -- ['<C-e>'] = cmp.mapping.close(),
+    ['<CR>'] = cmp.mapping.confirm {
+      behavior = cmp.ConfirmBehavior.Replace,
+      select = true,
+    },
+  },
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'buffer' },
+    { name = 'path' },
+  },
+}
+
+cmp.setup.cmdline('/', {
+  sources = {
+    { name = 'buffer' }
+  }
+})
+-- completion }}}
+
 -- lsp {{{
 local nvim_lsp = require 'lspconfig'
 local on_attach = function(_, bufnr)
@@ -385,6 +414,7 @@ local opts = {
     server = {
         -- on_attach is a callback called when the language server attachs to the buffer
         on_attach = on_attach,
+        capabilities = capabilities,
         settings = {
             -- to enable rust-analyzer settings visit:
             -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
@@ -399,27 +429,4 @@ local opts = {
 }
 require('rust-tools').setup(opts)
 -- lsp }}}
-
--- completion {{{
-local cmp = require 'cmp'
-cmp.setup {
-  mapping = {
-    ['<C-p>'] = cmp.mapping.select_prev_item(),
-    ['<C-n>'] = cmp.mapping.select_next_item(),
-    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.close(),
-    ['<CR>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
-    },
-  },
-  sources = {
-    { name = 'nvim_lsp' },
-    { name = 'buffer' },
-    { name = 'path' },
-  },
-}
--- completion }}}
 -- advanced plugin settings }}}
