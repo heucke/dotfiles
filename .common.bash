@@ -8,22 +8,11 @@ export LIGHTS="${LIGHTS:-off}"
 
 export PYTHON3_BIN=/usr/bin
 
-# golang
-unset goinstall
-if [[ -d "$HOME/.go-install" ]]; then
-  goinstall="$HOME/.go-install"
-elif [[ -d /usr/local/opt/go/libexec ]]; then
-  goinstall="/usr/local/opt/go/libexec"
-elif [[ -d /usr/local/go ]]; then
-  goinstall="/usr/local/go"
-elif [[ -d /usr/lib/go ]]; then
-  goinstall="/usr/lib/go"
-fi
-if [[ -n "$goinstall" ]]; then
+# go
+if [[ -d /usr/lib/go ]]; then
   unset GOPATH
-  export PATH=$goinstall/bin:$HOME/go/bin:$PATH
+  export PATH=/usr/lib/go/bin:$HOME/go/bin:$PATH
 fi
-unset goinstall
 
 # rust
 if [[ -d "$HOME/.cargo/bin" ]]; then
@@ -61,27 +50,12 @@ if command -v bat >/dev/null 2>&1; then
   fi
   alias cat=bat
 fi
-## find -> fd
-fdh() {
-  cat <<EOF
-fd - find replacement
-
-If {} is foo/bar.jpg:
-- {.} is foo/bar
-- {/} is bar.jpg
-- {//} is foo
-- {/.} is bar
-
-fd foo -x convert {} {.}.png is like find -iname '*foo*' -exec 'convert ...'
-fd foo -X for batch exec (all results in one exec)
-EOF
-}
+## fd (but don't replace find)
 FD_CLI="fd"
 if [[ -x /usr/bin/fdfind ]]; then
   alias fd=fdfind
   FD_CLI="fdfind"
 fi
-# actually use fd
 # command -v fd >/dev/null 2>&1 && alias find=fd
 
 # set up fzf
@@ -107,9 +81,9 @@ export FZF_DEFAULT_OPTS="
 "
 fzf() {
   if [[ "$(tput cols)" -lt 120 ]]; then
-    command fzf --preview-window 'down:60%' $@
+    command fzf --preview-window 'down:60%' "$@"
   else
-    command fzf --preview-window 'right:50%' $@
+    command fzf --preview-window 'right:50%' "$@"
   fi
 }
 
@@ -173,9 +147,7 @@ if ! command -v ffmpeg >/dev/null 2>&1; then
 fi
 alias pb="xsel --clipboard"
 alias kc="kubectl config current-context"
-alias hstat="curl -o /dev/null --silent --head --write-out '%{http_code}\n'" $1
-# https://github.com/DanielFGray/fzf-scripts
-alias jqfzf="fzrepl -c 'jq -r {q}' -q ."
+alias hstat="curl -o /dev/null --silent --head --write-out '%{http_code}\n'" "$1"
 
 # music
 alias beet="echo 'Use tbeet for Tyler or mbeet for Mark.'"
@@ -201,7 +173,7 @@ ssh() {
 
 tree() {
   if command -v exa &>/dev/null; then
-    exa --long --tree --level=3 --group-directories-first --git --git-ignore --ignore-glob 'target|node_modules|.git' --color=always $@ | bat --color
+    exa --long --tree --level=3 --group-directories-first --git --git-ignore --ignore-glob 'target|node_modules|.git' --color=always "$@" | bat --color
   else
     command tree -I 'target|node_modules|.git' -ash -F -C --dirsfirst
   fi
