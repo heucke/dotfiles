@@ -266,7 +266,7 @@ require("lualine").setup({
 		lualine_a = { "mode" },
 		lualine_b = { "branch", "diff", {
 			"diagnostics",
-			sources = { "nvim_lsp" },
+			sources = { "nvim_diagnostic" },
 		} },
 		lualine_c = { { "filename", file_statue = true, path = 1 } },
 		lualine_x = { "encoding", "fileformat", "filetype" },
@@ -437,15 +437,13 @@ local opts = {
 require("rust-tools").setup(opts)
 
 local null_ls = require("null-ls")
-null_ls.config({
+null_ls.setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
 	sources = {
 		null_ls.builtins.diagnostics.shellcheck,
 		null_ls.builtins.formatting.stylua,
 	},
-})
-nvim_lsp["null-ls"].setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
 })
 -- lsp }}}
 -- advanced plugin settings }}}
