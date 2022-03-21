@@ -228,6 +228,7 @@ augroup Languages
   au FileType gohtmltmpl setl expandtab shiftwidth=2 softtabstop=2 tabstop=4
   au FileType python setl colorcolumn=88 shiftwidth=4 softtabstop=4
   au FileType rust setl colorcolumn=100
+  au BufNewFile,BufRead *.env set syntax=txt filetype=txt
   au BufNewFile,BufRead *.fish set syntax=fish filetype=fish
   au BufRead,BufNewFile *.tsv setlocal tabstop=20 nowrap listchars=eol:\ ,tab:»-,trail:·,precedes:…,extends:…,nbsp:‗ list
 augroup END
@@ -397,16 +398,20 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 
 -- Enable the following language servers
--- local servers = { "pyright", "tsserver" }
--- for _, lsp in ipairs(servers) do
--- nvim_lsp[lsp].setup {
--- on_attach = on_attach,
--- capabilities = capabilities,
--- flags = {
--- debounce_text_changes = 150,
--- }
--- }
--- end
+-- (rust is handled separately below)
+local servers = {
+	"pyright",
+	"tsserver",
+}
+for _, lsp in ipairs(servers) do
+	nvim_lsp[lsp].setup({
+		on_attach = on_attach,
+		capabilities = capabilities,
+		flags = {
+			debounce_text_changes = 150,
+		},
+	})
+end
 local opts = {
 	tools = { -- rust-tools options
 		autoSetHints = true,
