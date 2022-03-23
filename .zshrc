@@ -57,8 +57,8 @@ py_ve() { [[ -n "$VIRTUAL_ENV" ]] && echo -n "%{%F{3}%}v%{%f%}"; }
 ps_host() { [[ -n "$SSH_CLIENT" ]] && echo -n "%{%F{246}%}%m%{%f%} "; }
 source ~/bin/git-prompt.sh
 precmd () { __git_ps1 "
-%{%F{246}%}╭─[%T]%1(j.z%j.)%{%f%}$(py_ve) $(ps_host)%{%F{4}%}%(6~|.../%5~|%~)%{%f%}" "
-%{%F{246}%}╰──▶%{%f%} " }
+%{%F{246}%}%1(j.z.)╭─[%T]$(py_ve) $(ps_host)%{%F{4}%}%(6~|.../%5~|%~)%{%f%}" "
+%{%F{246}%}%1(j.%j.)╰──▶%{%f%} " }
 precmd_functions+=(pipe_status)
 # }}}
 
