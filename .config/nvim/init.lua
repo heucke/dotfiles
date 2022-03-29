@@ -391,7 +391,7 @@ local on_attach = function(_, bufnr)
 	end)
 end
 -- Show issues with code under cursor (if any)
--- vim.cmd([[autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()]])
+-- vim.cmd([[autocmd CursorHold * lua vim.diagnostic.open_float()]])
 
 -- nvim-cmp supports additional completion capabilities
 local capabilities = vim.lsp.protocol.make_client_capabilities()
