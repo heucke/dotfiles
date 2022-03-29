@@ -340,10 +340,10 @@ cmp.setup({
 		["<C-f>"] = cmp.mapping.scroll_docs(4),
 		-- ["<C-Space>"] = cmp.mapping.complete(),
 		-- ["<C-e>"] = cmp.mapping.close(),
-		["<CR>"] = cmp.mapping.confirm({
-			behavior = cmp.ConfirmBehavior.Replace,
-			select = true,
-		}),
+		-- ["<CR>"] = cmp.mapping.confirm({
+			-- behavior = cmp.ConfirmBehavior.Replace,
+			-- select = true,
+		-- }),
 	},
 	sources = {
 		{ name = "nvim_lsp" },
@@ -391,7 +391,7 @@ local on_attach = function(_, bufnr)
 	end)
 end
 -- Show issues with code under cursor (if any)
-vim.cmd([[autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()]])
+-- vim.cmd([[autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()]])
 
 -- nvim-cmp supports additional completion capabilities
 local capabilities = vim.lsp.protocol.make_client_capabilities()
