@@ -53,12 +53,17 @@ function pipe_status() {
     echo "\b]"
   fi
 }
-py_ve() { [[ -n "$VIRTUAL_ENV" ]] && echo -n "%{%F{3}%}v%{%f%}"; }
+#ps_foo() { echo -n ""; }
+ps_time() { echo -n "%{%F{246}%}%T%{%f%}"; }
+ps_cwd() { echo -n "%{%F{4}%}%(6~|.../%5~|%~)%{%f%}"; }
+ps_jobs() { echo -n "%{%F{246}%}%1(j.z%j.)%{%f%}"; }
+ps_prompt() { echo -n "%{%F{5}%}$%{%f%}"; }
+ps_pyvenv() { [[ -n "$VIRTUAL_ENV" ]] && echo -n "%{%F{3}%}v%{%f%}"; }
 ps_host() { [[ -n "$SSH_CLIENT" ]] && echo -n "%{%F{246}%}%m%{%f%} "; }
 source ~/bin/git-prompt.sh
 precmd () { __git_ps1 "
-%{%F{246}%}%1(j.z.)╭─[%T]$(py_ve) $(ps_host)%{%F{4}%}%(6~|.../%5~|%~)%{%f%}" "
-%{%F{246}%}%1(j.%j.)╰──▶%{%f%} " }
+$(ps_time) $(ps_host)$(ps_cwd)" "
+$(ps_jobs)$(ps_pyvenv)$(ps_prompt) " }
 precmd_functions+=(pipe_status)
 # }}}
 
