@@ -3,12 +3,12 @@ local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.n
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
 	vim.fn.execute("!git clone https://github.com/wbthomason/packer.nvim " .. install_path)
 end
-vim.cmd([[
-  augroup Packer
-    autocmd!
-    autocmd BufWritePost init.lua PackerCompile
-  augroup end
-]])
+
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+	group = vim.api.nvim_create_augroup("Packer", { clear = true }),
+	pattern = { "init.lua" },
+	command = "source <afile> | PackerCompile",
+})
 
 -- install plugins
 local use = require("packer").use
@@ -24,7 +24,6 @@ require("packer").startup(function()
 		requires = { "rktjmp/lush.nvim" },
 	})
 	use("sheerun/vim-polyglot") -- Language support
-	use("svermeulen/vimpeccable") -- Simpler remaps for lua configs
 	use("tpope/vim-repeat") -- Allow '.' repeat action everywhere
 	use("tpope/vim-surround") -- Add new actions for surroundings
 
@@ -135,56 +134,57 @@ vim.opt.wildignore:append("*/.git/*,*/tmp/*,*.swp,*/.venv/*")
 vim.opt.wildmode = "list:longest"
 -- Save files in one action
 vim.opt.writebackup = false
-vim.cmd([[
-augroup QOL
-  autocmd!
-
-  " Remove whitespace on save
-  autocmd BufWritePre * :%s/\s\+$//e
-
-  " Return to same line on file reopen
-  autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
-    \| exe "normal! g'\"" | endif
-
-  " Disable comment continuation
-  autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-augroup END
-]])
+vim.api.nvim_create_augroup("QOL", { clear = true })
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+	group = "QOL",
+	pattern = "*",
+	command = [[:%s/\s\+$//e]],
+	desc = "Remove whitespace on save",
+})
+vim.api.nvim_create_autocmd({ "BufReadPost" }, {
+	group = "QOL",
+	command = [[if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]],
+	desc = "Return to same line on file reopen",
+})
+vim.api.nvim_create_autocmd({ "FileType" }, {
+	group = "QOL",
+	command = [[setlocal formatoptions-=c formatoptions-=r formatoptions-=o]],
+	desc = "Disable comment continuation",
+})
 -- settings }}}
 
 -- mappings {{{
 vim.g.mapleader = " "
-local vimp = require("vimp")
 -- Quicker than reaching for Escape
-vimp.inoremap("jk", "<Esc>")
+vim.keymap.set("i", "jk", "<Esc>")
 -- Switch to previous file
-vimp.nnoremap("<Space><Space>", "<C-^>")
+vim.keymap.set("n", "<Space><Space>", "<C-^>")
 -- Go to next buffer
-vimp.nnoremap("<C-n>", ":bnext<CR>")
+vim.keymap.set("n", "<C-n>", ":bnext<CR>")
 -- Save
-vimp.nnoremap("<Leader>w", ":w<CR>")
+vim.keymap.set("n", "<Leader>w", ":w<CR>")
 -- Delete current buffer
--- vimp.nnoremap('<Leader>q', ':bp <BAR> bd #<CR>')
+-- vim.keymap.set("n", '<Leader>q', ':bp <BAR> bd #<CR>')
 -- Split below
-vimp.nnoremap("<Leader>s", "<C-W>s")
+vim.keymap.set("n", "<Leader>s", "<C-W>s")
 -- Split right
-vimp.nnoremap("<Leader>v", "<C-W>v")
+vim.keymap.set("n", "<Leader>v", "<C-W>v")
 -- N always searches up the page
-vimp.nnoremap({ "expr" }, "N", [['nN'[v:searchforward] . 'zz']])
+vim.keymap.set("n", "N", [['nN'[v:searchforward] . 'zz']], { expr = true })
 -- n always searches down
-vimp.nnoremap({ "expr" }, "n", [['Nn'[v:searchforward] . 'zz']])
+vim.keymap.set("n", "n", [['Nn'[v:searchforward] . 'zz']], { expr = true })
 -- Fix common typo
-vimp.nnoremap("q:", ":q")
+vim.keymap.set("n", "q:", ":q")
 -- Use . shortcut with visual
-vimp.vnoremap(".", ":normal .<CR>")
+vim.keymap.set("v", ".", ":normal .<CR>")
 -- Fold easily
-vimp.nnoremap("<Leader>f", "za")
-vimp.nnoremap("<Leader>e", "zr")
-vimp.nnoremap("<Leader>r", "zm")
+vim.keymap.set("n", "<Leader>f", "za")
+vim.keymap.set("n", "<Leader>e", "zr")
+vim.keymap.set("n", "<Leader>r", "zm")
 -- cd to current file
-vimp.nnoremap(">", ":lcd %:p:h<CR>")
+vim.keymap.set("n", ">", ":lcd %:p:h<CR>")
 -- cd to parent
-vimp.nnoremap("<", ":lcd ..<CR>")
+vim.keymap.set("n", "<", ":lcd ..<CR>")
 -- mappings }}}
 
 -- looks {{{
@@ -203,12 +203,12 @@ vim.opt.colorcolumn = "80"
 vim.cursorline = false
 vim.cursorcolumn = false
 -- Highlight on yank
-vim.cmd([[
-  augroup YankHighlight
-    autocmd!
-    autocmd TextYankPost * silent! lua vim.highlight.on_yank()
-  augroup end
-]])
+vim.api.nvim_create_autocmd("TextYankPost", {
+	once = true,
+	callback = function()
+		vim.highlight.on_yank()
+	end,
+})
 -- Better looking splits
 vim.cmd([[hi VertSplit ctermbg=NONE guibg=NONE]])
 -- Show indicator for wrapped lines
@@ -220,19 +220,84 @@ vim.g.python_highlight_all = 1
 if vim.fn.isdirectory(vim.env.PYTHON3_BIN) then
 	vim.g.python3_host_prog = vim.env.PYTHON3_BIN .. "/python3"
 end
-vim.cmd([[
-augroup Languages
-  autocmd!
-  au FileType make,automake setl noexpandtab
-  au FileType go setl noexpandtab shiftwidth=4 softtabstop=4 tabstop=4 autowrite colorcolumn=100
-  au FileType gohtmltmpl setl expandtab shiftwidth=2 softtabstop=2 tabstop=4
-  au FileType python setl colorcolumn=88 shiftwidth=4 softtabstop=4
-  au FileType rust setl colorcolumn=100
-  au BufNewFile,BufRead *.env set syntax=txt filetype=txt
-  au BufNewFile,BufRead *.fish set syntax=fish filetype=fish
-  au BufRead,BufNewFile *.tsv setlocal tabstop=20 nowrap listchars=eol:\ ,tab:»-,trail:·,precedes:…,extends:…,nbsp:‗ list
-augroup END
-]])
+vim.api.nvim_create_augroup("Languages", { clear = true })
+vim.api.nvim_create_autocmd({ "FileType" }, {
+	group = "Languages",
+	pattern = { "make", "automake" },
+	callback = function()
+		vim.opt_local.expandtab = false
+	end,
+})
+vim.api.nvim_create_autocmd({ "FileType" }, {
+	group = "Languages",
+	pattern = { "go" },
+	callback = function()
+		vim.opt_local.expandtab = false
+		vim.opt_local.shiftwidth = 4
+		vim.opt_local.softtabstop = 4
+		vim.opt_local.tabstop = 4
+		vim.opt_local.autowrite = true
+		vim.opt_local.colorcolumn = "100"
+	end,
+})
+vim.api.nvim_create_autocmd({ "FileType" }, {
+	group = "Languages",
+	pattern = { "gohtmltmpl" },
+	callback = function()
+		vim.opt_local.expandtab = true
+		vim.opt_local.shiftwidth = 2
+		vim.opt_local.softtabstop = 2
+		vim.opt_local.tabstop = 4
+	end,
+})
+vim.api.nvim_create_autocmd({ "FileType" }, {
+	group = "Languages",
+	pattern = { "python" },
+	callback = function()
+		vim.opt_local.colorcolumn = "88"
+		vim.opt_local.shiftwidth = 4
+		vim.opt_local.softtabstop = 4
+	end,
+})
+vim.api.nvim_create_autocmd({ "FileType" }, {
+	group = "Languages",
+	pattern = { "rust" },
+	callback = function()
+		vim.opt_local.colorcolumn = "100"
+	end,
+})
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+	group = "Languages",
+	pattern = { "*.env" },
+	callback = function()
+		vim.opt_local.syntax = "txt"
+		vim.opt_local.filetype = "txt"
+	end,
+})
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+	group = "Languages",
+	pattern = { "*.fish" },
+	callback = function()
+		vim.opt_local.syntax = "fish"
+		vim.opt_local.filetype = "fish"
+	end,
+})
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+	group = "Languages",
+	pattern = { "*.tsv" },
+	callback = function()
+		vim.opt_local.tabstop = 20
+		vim.opt_local.wrap = false
+		vim.opt_local.listchars = {
+			eol = " ",
+			tab = "»-",
+			trail = "·",
+			precedes = "…",
+			extends = "…",
+			nbsp = "‗",
+		}
+	end,
+})
 -- language settings }}}
 
 -- basic plugin settings {{{
@@ -249,7 +314,7 @@ require("nvim-tmux-navigation").setup({
 	},
 })
 -- moll/vim-bbye
-vimp.nnoremap("<Leader>q", ":Bwipeout<CR>")
+vim.keymap.set("n", "<Leader>q", ":Bwipeout<CR>")
 -- basic plugin settings }}}
 
 -- advanced plugin settings {{{
@@ -295,19 +360,20 @@ require("lualine").setup({
 -- lualine }}}
 
 -- telescope {{{
-vimp.nnoremap({ "silent" }, ";", [[<cmd>lua require("telescope.builtin").buffers()<CR>]])
-vimp.nnoremap({ "silent" }, "<C-p>", [[<cmd>lua require("telescope.builtin").find_files()<CR>]])
--- vimp.nnoremap({ "silent" }, "<leader>sb", [[<cmd>lua require("telescope.builtin").current_buffer_fuzzy_find()<CR>]])
--- vimp.nnoremap({ "silent" }, "<leader>sh", [[<cmd>lua require("telescope.builtin").help_tags()<CR>]])
--- vimp.nnoremap({ "silent" }, "<leader>st", [[<cmd>lua require("telescope.builtin").tags()<CR>]])
--- vimp.nnoremap({ "silent" }, "<leader>sd", [[<cmd>lua require("telescope.builtin").grep_string()<CR>]])
-vimp.nnoremap({ "silent" }, "<leader>a", [[<cmd>lua require("telescope.builtin").live_grep()<CR>]])
--- vimp.nnoremap(
--- { "silent" },
+vim.keymap.set("n", ";", [[<cmd>lua require("telescope.builtin").buffers()<CR>]], { silent = true })
+vim.keymap.set("n", "<C-p>", [[<cmd>lua require("telescope.builtin").find_files()<CR>]], { silent = true })
+-- vim.keymap.set("n", "<leader>sb", [[<cmd>lua require("telescope.builtin").current_buffer_fuzzy_find()<CR>]], { silent = true })
+-- vim.keymap.set("n", "<leader>sh", [[<cmd>lua require("telescope.builtin").help_tags()<CR>]], { silent = true })
+-- vim.keymap.set("n", "<leader>st", [[<cmd>lua require("telescope.builtin").tags()<CR>]], { silent = true })
+-- vim.keymap.set("n", "<leader>sd", [[<cmd>lua require("telescope.builtin").grep_string()<CR>]], { silent = true })
+vim.keymap.set("n", "<leader>a", [[<cmd>lua require("telescope.builtin").live_grep()<CR>]], { silent = true })
+-- vim.keymap.set(
+-- "n",
 -- "<leader>so",
--- [[<cmd>lua require("telescope.builtin").tags{ only_current_buffer = true }<CR>]]
+-- [[<cmd>lua require("telescope.builtin").tags{ only_current_buffer = true }<CR>]],
+-- { silent = true },
 -- )
--- vimp.nnoremap({ "silent" }, "<leader>?", [[<cmd>lua require("telescope.builtin").oldfiles()<CR>]])
+-- vim.keymap.set("n", "<leader>?", [[<cmd>lua require("telescope.builtin").oldfiles()<CR>]], { silent = true })
 -- telescope }}}
 
 -- treesitter {{{
@@ -341,8 +407,8 @@ cmp.setup({
 		-- ["<C-Space>"] = cmp.mapping.complete(),
 		-- ["<C-e>"] = cmp.mapping.close(),
 		-- ["<CR>"] = cmp.mapping.confirm({
-			-- behavior = cmp.ConfirmBehavior.Replace,
-			-- select = true,
+		-- behavior = cmp.ConfirmBehavior.Replace,
+		-- select = true,
 		-- }),
 	},
 	sources = {
@@ -363,35 +429,41 @@ cmp.setup.cmdline("/", {
 local nvim_lsp = require("lspconfig")
 local on_attach = function(_, bufnr)
 	vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-	vimp.add_buffer_maps(bufnr, function()
-		vimp.nnoremap("<leader>lf", [[<cmd>lua vim.lsp.buf.formatting_sync(nil, 1000)<CR>]])
-		vimp.nnoremap("<leader>lD", [[<cmd>lua vim.lsp.buf.declaration()<CR>]])
-		vimp.nnoremap("<leader>ld", [[<cmd>lua vim.lsp.buf.definition()<CR>]])
-		vimp.nnoremap("K", [[<cmd>lua vim.lsp.buf.hover()<CR>]])
-		vimp.nnoremap("<leader>li", [[<cmd>lua vim.lsp.buf.implementation()<CR>]])
-		-- vimp.nnoremap("<C-k>", [[<cmd>lua vim.lsp.buf.signature_help()<CR>]])
-		-- vimp.nnoremap("<leader>wa", [[<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>]])
-		-- vimp.nnoremap("<leader>wr", [[<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>]])
-		-- vimp.nnoremap("<leader>wl", [[<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>]])
-		-- vimp.nnoremap("<leader>D", [[<cmd>lua vim.lsp.buf.type_definition()<CR>]])
-		vimp.nnoremap("<leader>ln", [[<cmd>lua vim.lsp.buf.rename()<CR>]])
-		vimp.nnoremap("<leader>lr", [[<cmd>lua vim.lsp.buf.references()<CR>]])
-		vimp.nnoremap("<leader>la", [[<cmd>lua vim.lsp.buf.code_action()<CR>]])
-		-- vimp.nnoremap("<leader>e", [[<cmd>lua vim.diagnostic.open_float()<CR>]])
-		-- vimp.nnoremap("[d", [[<cmd>lua vim.diagnostic.goto_prev()<CR>]])
-		-- vimp.nnoremap("]d", [[<cmd>lua vim.diagnostic.goto_next()<CR>]])
-		-- vimp.nnoremap("<leader>q", [[<cmd>lua vim.diagnostic.setloclist()<CR>]])
-		-- vimp.nnoremap("<leader>so", [[<cmd>lua require("telescope.builtin").lsp_document_symbols()<CR>]])
-		-- Goto previous/next diagnostic warning/error
-		vimp.nnoremap({ "silent" }, "<leader>le", [[<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>]])
-		vimp.nnoremap({ "silent" }, "<leader>lE", [[<cmd>lua vim.lsp.diagnostic.goto_next()<CR>]])
+	vim.keymap.set("n", "<leader>lf", [[<cmd>lua vim.lsp.buf.formatting_sync(nil, 1000)<CR>]], { buffer = bufnr })
+	vim.keymap.set("n", "<leader>lD", [[<cmd>lua vim.lsp.buf.declaration()<CR>]], { buffer = bufnr })
+	vim.keymap.set("n", "<leader>ld", [[<cmd>lua vim.lsp.buf.definition()<CR>]], { buffer = bufnr })
+	vim.keymap.set("n", "K", [[<cmd>lua vim.lsp.buf.hover()<CR>]], { buffer = bufnr })
+	vim.keymap.set("n", "<leader>li", [[<cmd>lua vim.lsp.buf.implementation()<CR>]], { buffer = bufnr })
+	-- vim.keymap.set("n", "<C-k>", [[<cmd>lua vim.lsp.buf.signature_help()<CR>]], { buffer = bufnr })
+	-- vim.keymap.set("n", "<leader>wa", [[<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>]], { buffer = bufnr })
+	-- vim.keymap.set("n", "<leader>wr", [[<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>]], { buffer = bufnr })
+	-- vim.keymap.set("n", "<leader>wl", [[<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>]], { buffer = bufnr })
+	-- vim.keymap.set("n", "<leader>D", [[<cmd>lua vim.lsp.buf.type_definition()<CR>]], { buffer = bufnr })
+	vim.keymap.set("n", "<leader>ln", [[<cmd>lua vim.lsp.buf.rename()<CR>]], { buffer = bufnr })
+	vim.keymap.set("n", "<leader>lr", [[<cmd>lua vim.lsp.buf.references()<CR>]], { buffer = bufnr })
+	vim.keymap.set("n", "<leader>la", [[<cmd>lua vim.lsp.buf.code_action()<CR>]], { buffer = bufnr })
+	-- vim.keymap.set("n", "<leader>e", [[<cmd>lua vim.diagnostic.open_float()<CR>]], { buffer = bufnr })
+	-- vim.keymap.set("n", "[d", [[<cmd>lua vim.diagnostic.goto_prev()<CR>]], { buffer = bufnr })
+	-- vim.keymap.set("n", "]d", [[<cmd>lua vim.diagnostic.goto_next()<CR>]], { buffer = bufnr })
+	-- vim.keymap.set("n", "<leader>q", [[<cmd>lua vim.diagnostic.setloclist()<CR>]], { buffer = bufnr })
+	-- vim.keymap.set("n", "<leader>so", [[<cmd>lua require("telescope.builtin").lsp_document_symbols()<CR>]], { buffer = bufnr })
+	-- Goto previous/next diagnostic warning/error
+	vim.keymap.set(
+		"n",
+		"<leader>le",
+		[[<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>]],
+		{ silent = true, buffer = bufnr }
+	)
+	vim.keymap.set(
+		"n",
+		"<leader>lE",
+		[[<cmd>lua vim.lsp.diagnostic.goto_next()<CR>]],
+		{ silent = true, buffer = bufnr }
+	)
 
-		-- vimp.nnoremap({ "silent" }, "g0", [[<cmd>lua vim.lsp.buf.document_symbol()<CR>]])
-		-- vimp.nnoremap({ "silent" }, "gW", [[<cmd>lua vim.lsp.buf.workspace_symbol()<CR>]])
-	end)
+	-- vim.keymap.set("n", "g0", [[<cmd>lua vim.lsp.buf.document_symbol()<CR>]], { silent = true, buffer = bufnr })
+	-- vim.keymap.set("n", "gW", [[<cmd>lua vim.lsp.buf.workspace_symbol()<CR>]], { silent = true, buffer = bufnr })
 end
--- Show issues with code under cursor (if any)
--- vim.cmd([[autocmd CursorHold * lua vim.diagnostic.open_float()]])
 
 -- nvim-cmp supports additional completion capabilities
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -432,8 +504,11 @@ local opts = {
 			-- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
 			["rust-analyzer"] = {
 				-- enable clippy on save
-				checkOnSave = {
-					command = "clippy",
+				debug = {
+					openDebugPane = true,
+				},
+				inlayHints = {
+					closureReturnTypeHints = true,
 				},
 			},
 		},
