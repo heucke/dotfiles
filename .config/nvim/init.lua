@@ -268,7 +268,7 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 })
 vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 	group = "Languages",
-	pattern = { "*.env" },
+	pattern = { "*.env", "*.txt" },
 	callback = function()
 		vim.opt_local.syntax = "txt"
 		vim.opt_local.filetype = "txt"
