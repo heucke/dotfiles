@@ -62,7 +62,7 @@ vim.g.clipboard = {
 -- Give more space for displaying messages
 vim.opt.cmdheight = 2
 -- Don't autoselect any completion options, always show menu with 1+ matches
-vim.opt.completeopt = "noinsert,menuone,noselect"
+vim.opt.completeopt = "menu,menuone,noselect"
 -- Use unix line endings
 vim.opt.fileformat = "unix"
 -- Fold on triple brackets
@@ -185,6 +185,16 @@ vim.keymap.set("n", "<Leader>r", "zm")
 vim.keymap.set("n", ">", ":lcd %:p:h<CR>")
 -- cd to parent
 vim.keymap.set("n", "<", ":lcd ..<CR>")
+-- change between dark and light mode
+function lights()
+	background = vim.opt.background._value
+	if background == "light" then
+		vim.opt.background = "dark"
+	else
+		vim.opt.background = "light"
+	end
+end
+vim.keymap.set("n", "<Leader>ll", ":lua lights()<CR>")
 -- mappings }}}
 
 -- looks {{{
@@ -416,12 +426,6 @@ cmp.setup({
 		{ name = "nvim_lsp" },
 		{ name = "buffer" },
 		{ name = "path" },
-	},
-})
-
-cmp.setup.cmdline("/", {
-	sources = {
-		{ name = "buffer" },
 	},
 })
 -- completion }}}
