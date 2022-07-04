@@ -18,11 +18,8 @@ require("packer").startup(function()
 	-- basic plugins
 	use("alexghergh/nvim-tmux-navigation") -- Seamless vim/tmux pane navigation with <C-h/j/k/l>
 	use("earthly/earthly.vim") -- Earthfile support
+	use("ellisonleao/gruvbox.nvim") -- Colorscheme
 	use("moll/vim-bbye") -- Prevent closing files from messing with splits
-	use({ -- Colorscheme
-		"ellisonleao/gruvbox.nvim",
-		requires = { "rktjmp/lush.nvim" },
-	})
 	use("sheerun/vim-polyglot") -- Language support
 	use("tpope/vim-repeat") -- Allow '.' repeat action everywhere
 	use("tpope/vim-surround") -- Add new actions for surroundings
@@ -199,16 +196,25 @@ vim.keymap.set("n", "<Leader>ll", ":lua lights()<CR>")
 
 -- looks {{{
 vim.opt.termguicolors = true
-vim.g.gruvbox_number_column = "bg1"
-vim.g.gruvbox_italic = true
-vim.g.gruvbox_italicize_strings = true
-vim.g.gruvbox_contrast_light = "hard"
-vim.cmd([[ colorscheme gruvbox ]])
 if vim.env.LIGHTS == "on" then
 	vim.opt.background = "light"
 else
 	vim.opt.background = "dark"
 end
+require("gruvbox").setup({
+	undercurl = true,
+	underline = true,
+	bold = true,
+	italic = true, -- will make italic comments and special strings
+	inverse = true, -- invert background for search, diffs, statuslines and errors
+	invert_selection = false,
+	invert_signs = false,
+	invert_tabline = false,
+	invert_intend_guides = false,
+	contrast = "hard", -- can be "hard" or "soft"
+	overrides = {},
+})
+vim.cmd([[ colorscheme gruvbox ]])
 vim.opt.colorcolumn = "80"
 vim.cursorline = false
 vim.cursorcolumn = false
@@ -508,12 +514,18 @@ local opts = {
 			-- to enable rust-analyzer settings visit:
 			-- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
 			["rust-analyzer"] = {
+				cargo = {
+					loadOutDirsFromCheck = true,
+				},
 				-- enable clippy on save
 				debug = {
 					openDebugPane = true,
 				},
 				inlayHints = {
 					closureReturnTypeHints = true,
+				},
+				procMacro = {
+					enable = true,
 				},
 			},
 		},
